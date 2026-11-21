@@ -43,6 +43,7 @@
 #
 #   (2) This script targets any POSIX shell, so it avoids extensions provided
 #       by Bash, Ksh, etc; in particular arrays are avoided.
+#
 #       The "traditional" practice of packing multiple parameters into a
 #       space-separated string is a well documented source of bugs and security
 #       problems, so this is (mostly) avoided, by progressively accumulating
@@ -187,7 +188,8 @@ if "$cygwin" || "$msys" ; then
         then
             arg=$( cygpath --path --ignore --mixed "$arg" )
         fi
-        # Roll the args list around exactly as many times as the number of # args, so each arg winds up back in the position where it started, but
+        # Roll the args list around exactly as many times as the number of
+        # args, so each arg winds up back in the position where it started, but
         # possibly modified.
         #
         # NB: a `for` loop captures its iteration list before it begins, so
