@@ -1,11 +1,19 @@
-# 云笺（yunke-ainote）
+# 云笺 · yunke-ainote
 
 离线 AI 笔记本 Android 工程：本地记录 + 双通道对话（端侧 llama.cpp 推理 / OpenAI 兼容云端），对话可抽取为笔记，问答依据本地笔记回答。
 
-- 包名：`com.yunke.ainote`
-- 版本：versionCode 2 / versionName 0.2.0
-- ABI：arm64-v8a / x86_64
-- minSdk 24 / compileSdk 34 / targetSdk 34
+- **在线展示页**：<https://180lisilence.github.io/yunke-ainote/>
+- **包名**：`com.yunke.ainote`
+- **版本**：versionCode 2 / versionName 0.2.0
+- **平台**：Android，ABI arm64-v8a / x86_64，minSdk 24 / compileSdk 34 / targetSdk 34
+
+## 功能亮点
+
+- **本地记录**：笔记列表、正文编辑、文件夹分类、修订历史、回收站。
+- **双通道对话**：端侧内置 GGUF 模型整段推理；云端走 OpenAI 兼容接口，支持 SSE 流式与思维链（`reasoning_content`）；通道选择持久化。
+- **对话抽取入库**：模型按 JSON 契约抽取标题 / 正文 / 标签 / 人物 / 地点 / 情绪 / 待办，气泡末尾标注「📝 已存入笔记」。
+- **读库问答**：先检索本地笔记标题与正文作为证据，只依据记录回答、不编造，气泡末尾标注「📎 依据」。
+- **会话落库回看**：多轮历史携带到模型请求，消息持久化可回看。
 
 ## 技术栈
 
