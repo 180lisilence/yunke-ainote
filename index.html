@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云笺 · yunke-ainote — 离线 AI 笔记本</title>
+<meta name="description" content="云笺：离线 AI 笔记本 Android 工程，本地记录 + 端侧/云端双通道对话，对话抽取为笔记，读库问答。">
+<style>
+  :root{
+    --bg:#0f1419; --bg-soft:#161d24; --card:#1a222b; --line:#2a3540;
+    --text:#e7ecef; --muted:#9aa8b2; --accent:#3fa99e; --accent-2:#6cc4bb;
+    --tag:#22303a; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.7;
+  }
+  a{color:var(--accent-2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:20;background:rgba(15,20,25,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+  .brand img{width:32px;height:32px;border-radius:8px}
+  .nav-links{display:flex;gap:18px;font-size:14px}
+  .nav-links a{color:var(--muted)}
+  .nav-links a:hover{color:var(--text);text-decoration:none}
+
+  /* hero */
+  .hero{padding:72px 0 56px;text-align:center}
+  .hero img.logo{width:88px;height:88px;border-radius:22px;box-shadow:var(--shadow);margin-bottom:22px}
+  .hero h1{font-size:40px;letter-spacing:2px;margin-bottom:14px}
+  .hero p.sub{font-size:18px;color:var(--muted);max-width:640px;margin:0 auto 26px}
+  .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .badge{background:var(--tag);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 14px;font-size:13px}
+  .cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btn{display:inline-block;padding:11px 22px;border-radius:12px;font-size:15px;font-weight:600}
+  .btn.primary{background:var(--accent);color:#06211e}
+  .btn.primary:hover{background:var(--accent-2);text-decoration:none}
+  .btn.ghost{border:1px solid var(--line);color:var(--text)}
+  .btn.ghost:hover{border-color:var(--accent);text-decoration:none}
+
+  /* sections */
+  section{padding:48px 0}
+  section h2{font-size:26px;margin-bottom:8px}
+  section .lead{color:var(--muted);margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .card h3{font-size:16px;margin-bottom:8px;color:var(--accent-2)}
+  .card p{font-size:14px;color:var(--muted)}
+  .card .ico{font-size:22px;margin-bottom:10px}
+
+  /* tags */
+  .tags{display:flex;flex-wrap:wrap;gap:10px}
+  .tag{background:var(--tag);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:14px;color:var(--text)}
+
+  /* code */
+  pre{background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:20px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:"SF Mono",Consolas,Menlo,monospace}
+  .tree{color:#c8d3da}
+
+  ul.feat{list-style:none;display:grid;gap:12px}
+  ul.feat li{padding-left:26px;position:relative;color:var(--muted)}
+  ul.feat li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+  ul.feat li b{color:var(--text)}
+
+  .meta-table{width:100%;border-collapse:collapse;font-size:14px}
+  .meta-table td{padding:10px 12px;border-bottom:1px solid var(--line)}
+  .meta-table td:first-child{color:var(--muted);width:180px}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+
+  @media (max-width:820px){
+    .grid{grid-template-columns:1fr 1fr}
+    .hero h1{font-size:30px}
+  }
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="云笺图标">
+      <span>云笺 · yunke-ainote</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#stack">技术栈</a>
+      <a href="#structure">模块结构</a>
+      <a href="#build">构建</a>
+      <a href="https://github.com/180lisilence/yunke-ainote" target="_blank" rel="noopener">GitHub 仓库</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <img class="logo" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="云笺图标">
+    <h1>云笺</h1>
+    <p class="sub">离线 AI 笔记本 Android 工程：本地记录 + 端侧 / 云端双通道对话，对话可抽取为笔记，问答依据本地笔记回答。</p>
+    <div class="badges">
+      <span class="badge">versionName 0.2.0</span>
+      <span class="badge">Android minSdk 24 / targetSdk 34</span>
+      <span class="badge">arm64-v8a · x86_64</span>
+      <span class="badge">Kotlin + Compose</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/180lisilence/yunke-ainote" target="_blank" rel="noopener">查看源码仓库</a>
+      <a class="btn ghost" href="#build">构建说明</a>
+    </div>
+  </section>
+
+  <section id="features" class="wrap">
+    <h2>功能亮点</h2>
+    <p class="lead">记录、对话、抽取、检索闭环，数据落在本机。</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ico">📝</div>
+        <h3>本地记录</h3>
+        <p>笔记列表、正文编辑、文件夹分类、修订历史与回收站，全部存于本机 Room 数据库。</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔀</div>
+        <h3>双通道对话</h3>
+        <p>端侧内置 GGUF 模型整段推理；云端走 OpenAI 兼容接口，支持 SSE 流式与思维链，通道选择持久化。</p>
+      </div>
+      <div class="card">
+        <div class="ico">🗂️</div>
+        <h3>对话抽取入库</h3>
+        <p>按 JSON 契约抽取标题 / 正文 / 标签 / 人物 / 地点 / 情绪 / 待办，气泡标注「📝 已存入笔记」。</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔎</div>
+        <h3>读库问答</h3>
+        <p>先检索本地笔记标题与正文作为证据，只依据记录回答、不编造，气泡标注「📎 依据」。</p>
+      </div>
+      <div class="card">
+        <div class="ico">💬</div>
+        <h3>会话落库回看</h3>
+        <p>多轮历史携带到模型请求，消息持久化，可随时回看上下文。</p>
+      </div>
+      <div class="card">
+        <div class="ico">🧩</div>
+        <h3>可移植内容形态</h3>
+        <p>多内容类型数据模型、底部多 Tab 导航、聊天壳参数 / 预设 / 用量与视觉主题。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack" class="wrap">
+    <h2>技术栈</h2>
+    <p class="lead">纯 Kotlin / Compose 界面，Room 持久化，NDK 桥接 llama.cpp。</p>
+    <div class="tags">
+      <span class="tag">Kotlin 1.9.22</span>
+      <span class="tag">Jetpack Compose BOM 2024.03.00</span>
+      <span class="tag">Material3</span>
+      <span class="tag">Room 2.6.1</span>
+      <span class="tag">AGP 8.5.2</span>
+      <span class="tag">Gradle 8.14.3</span>
+      <span class="tag">NDK 26.1.10909125</span>
+      <span class="tag">CMake 3.22.1 · C++17</span>
+      <span class="tag">llama.cpp C API</span>
+      <span class="tag">HttpURLConnection + org.json</span>
+      <span class="tag">OpenAI 兼容 /chat/completions · SSE</span>
+    </div>
+  </section>
+
+  <section id="structure" class="wrap">
+    <h2>模块结构</h2>
+    <p class="lead">源码位于 <code>app/src/main/</code>。</p>
+    <pre><code class="tree">app/src/main/
+├── java/com/yunke/ainote/
+│   ├── ai/          NoteExtractor（对话抽取为笔记，JSON 契约）
+│   ├── data/       Room 实体 / DAO / Repository / 数据类型
+│   ├── llm/        LlmEngine（JNI 桥）、ModelManager（模型状态/内置拷贝/加载）
+│   ├── remote/     RemoteChatClient（云端非流式 + SSE 流式）
+│   ├── settings/    ChatParams / Presets / SettingsStore / UsageStore / 通道枚举
+│   └── ui/         Compose 屏幕、消息模型、主题、导航
+├── cpp/            llm_jni.cpp（JNI 加载/采样/释放）、CMakeLists.txt
+├── res/            图标与资源
+└── assets/models/  内置 GGUF 模型（不入库，见构建说明）</code></pre>
+  </section>
+
+  <section id="build" class="wrap">
+    <h2>构建与外部依赖</h2>
+    <p class="lead">仓库按 <code>.gitignore</code> 排除了体积过大或第三方的内容，clone 后需补齐两项才可编译 native。</p>
+    <ul class="feat">
+      <li><b>llama.cpp 源码</b>：放到 <code>third_party/llama.cpp/</code>（与 <code>:app</code> 平级），版本 v1.0.0；CMake 通过 <code>add_subdirectory</code> 静态编入。</li>
+      <li><b>内置模型权重</b>：放到 <code>app/src/main/assets/models/Qwen3-0.6B-Q4_0.gguf</code>（Qwen3-0.6B-Q4_0，Apache-2.0，约 364MB）；首启由 <code>ModelManager.ensureBuiltin()</code> 拷贝到私有目录后加载。</li>
+    </ul>
+    <div style="height:20px"></div>
+    <table class="meta-table">
+      <tr><td>JDK / SDK</td><td>JDK 21；Android SDK 34；build-tools 34.0.0</td></tr>
+      <tr><td>NDK / CMake</td><td>NDK 26.1.10909125；CMake 3.22.1</td></tr>
+      <tr><td>编译命令</td><td><code>./gradlew assembleDebug</code>（Windows：<code>gradlew.bat assembleDebug</code>）</td></tr>
+      <tr><td>路径注意</td><td>工程路径不要含中文 / 空格 / 括号，否则 CMake/Ninja 配置 native 会失败。</td></tr>
+    </table>
+  </section>
+
+  <section class="wrap">
+    <h2>进度台账</h2>
+    <p class="lead">分阶段开发记录随仓库归档。</p>
+    <ul class="feat">
+      <li><b>M1-进度.md</b>：工程地基（Room 笔记/修订、列表与编辑屏）。</li>
+      <li><b>M2-进度.md</b>：本地 LLM 通路、云端双通道、抽取入库、读库检索、会话落库、内置模型。</li>
+      <li><b>M3-进度.md</b>：两包结合移植（导航骨架 / 内容形态 / 聊天壳 / 视觉主题）与本地推理各轮修复记录。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    云笺 · yunke-ainote — 离线 AI 笔记本 · <a href="https://github.com/180lisilence/yunke-ainote" target="_blank" rel="noopener">180lisilence/yunke-ainote</a><br>
+    debug 构建；本地模型中文问答质量、速度与内存占用需真机 / 模拟器实测；云端请求需有效 API Key 与网络。
+  </div>
+</footer>
+
+</body>
+</html>
